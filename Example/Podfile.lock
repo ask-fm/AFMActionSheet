@@ -1,0 +1,20 @@
+PODS:
+  - AFMActionSheet (0.1.0)
+  - Nimble (1.0.0)
+  - Quick (0.3.1)
+
+DEPENDENCIES:
+  - AFMActionSheet (from `../`)
+  - Nimble
+  - Quick (~> 0.3.1)
+
+EXTERNAL SOURCES:
+  AFMActionSheet:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  AFMActionSheet: 4f30a6c02a3b5fc35ef23e6c155f9b36c05007c5
+  Nimble: 8bee528e5fcc403653076545db562d2b5db7bb87
+  Quick: 824572d3d198d51e52cf4aa722cebf7e59952a35
+
+COCOAPODS: 0.38.2

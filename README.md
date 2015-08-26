@@ -1,6 +1,6 @@
 # AFMActionSheet
 
-[![CI Status](http://img.shields.io/travis/Ilya Alesker/AFMActionSheet.svg?style=flat)](https://travis-ci.org/Ilya Alesker/AFMActionSheet)
+[![CI Status](http://img.shields.io/travis/ask-fm/AFMActionSheet.svg?style=flat)](https://travis-ci.org/ask-fm/AFMActionSheet)
 [![Version](https://img.shields.io/cocoapods/v/AFMActionSheet.svg?style=flat)](http://cocoapods.org/pods/AFMActionSheet)
 [![License](https://img.shields.io/cocoapods/l/AFMActionSheet.svg?style=flat)](http://cocoapods.org/pods/AFMActionSheet)
 [![Platform](https://img.shields.io/cocoapods/p/AFMActionSheet.svg?style=flat)](http://cocoapods.org/pods/AFMActionSheet)
