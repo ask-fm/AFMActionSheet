@@ -3,7 +3,7 @@
 //  AFMActionSheet
 //
 //  Created by Ilya Alesker on 08/26/2015.
-//  Copyright (c) 2015 Ilya Alesker. All rights reserved.
+//  Copyright (c) 2015 Ask.fm Europe, Ltd. All rights reserved.
 //
 
 import UIKit
