@@ -25,7 +25,7 @@ public class AFMPresentationAnimator: NSObject, UIViewControllerAnimatedTransiti
 
         UIView.animateWithDuration(self.transitionDuration(transitionContext),
             delay: 0,
-            usingSpringWithDamping: 0.5,
+            usingSpringWithDamping: 0.7,
             initialSpringVelocity: 0.9,
             options: UIViewAnimationOptions.CurveEaseInOut,
             animations: { _ in
