@@ -35,5 +35,4 @@ public class AFMPresentationAnimator: NSObject, UIViewControllerAnimatedTransiti
                 transitionContext.completeTransition(true)
         }
     }
-    
 }

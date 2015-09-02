@@ -9,23 +9,38 @@
 @IBDesignable
 public class AFMActionSheetController: UIViewController {
 
-    @IBInspectable var controlHeight: Int   = 50
-    @IBInspectable var spacing: Int         = 4
-    @IBInspectable var margin: Int          = 16
-    @IBInspectable var cornerRadius: Int    = 10
+    @IBInspectable public var controlHeight: Int   = 50 {
+        didSet { self.updateUI() }
+    }
+    @IBInspectable public var spacing: Int         = 4  {
+        didSet { self.updateUI() }
+    }
+    @IBInspectable public var margin: Int          = 16 {
+        didSet { self.updateUI() }
+    }
+    @IBInspectable public var cornerRadius: Int    = 10 {
+        didSet { self.updateUI() }
+    }
 
-    var actions: [AFMAction] = []
-    var actionControls: [UIControl] = []
-    var cancelControls: [UIControl] = []
+    public private(set) var actions: [AFMAction] = []
+    public private(set) var actionControls: [UIControl] = []
+    public private(set) var cancelControls: [UIControl] = []
+
     private var actionControlConstraints: [NSLayoutConstraint] = []
+    private var cancelControlConstraints: [NSLayoutConstraint] = []
 
     private var actionSheetTransitioningDelegate: UIViewControllerTransitioningDelegate?
 
+    private var actionGroupView: UIView = UIView()
+    private var cancelGroupView: UIView = UIView()
 
     // MARK: Initializers
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.view.addSubview(self.actionGroupView)
+        self.view.addSubview(self.cancelGroupView)
+        self.setupGroupViews()
     }
 
     public convenience init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?, transitioningDelegate: UIViewControllerTransitioningDelegate) {
@@ -73,35 +88,57 @@ public class AFMActionSheetController: UIViewController {
         if isCancelAction {
             self.cancelControls.append(control)
         } else {
-            self.actionControls.append(control)
+            // when it comes to non cancel controls, we want to position them from top to bottom
+            self.actionControls.insert(control, atIndex: 0)
         }
 
-        control.layer.cornerRadius = CGFloat(self.cornerRadius)
         control.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.view.addSubview(control)
-        self.configureSubviewGeometry()
+        if isCancelAction {
+            self.cancelGroupView.addSubview(control)
+            self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
+            self.cancelControlConstraints = self.constraintsForControls(self.cancelControls)
+            self.cancelGroupView.addConstraints(self.cancelControlConstraints)
+        } else {
+            self.actionGroupView.addSubview(control)
+            self.actionGroupView.removeConstraints(self.actionControlConstraints)
+            self.actionControlConstraints = self.constraintsForControls(self.actionControls)
+            self.actionGroupView.addConstraints(self.actionControlConstraints)
+        }
     }
 
 
     // MARK: Control positioning
 
-    private func configureSubviewGeometry() {
-        self.view.removeConstraints(self.actionControlConstraints)
-        self.actionControlConstraints.removeAll(keepCapacity: true)
-        self.actionControlConstraints = self.constraintsForControls()
-        self.view.addConstraints(self.actionControlConstraints)
+    private func setupGroupViews() {
+        let setupGroupView: UIView -> Void = { groupView in
+            groupView.clipsToBounds = true
+            groupView.layer.cornerRadius = CGFloat(self.cornerRadius)
+            groupView.setTranslatesAutoresizingMaskIntoConstraints(false)
+            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-margin-[groupView]-margin-|",
+                options: .DirectionLeadingToTrailing,
+                metrics: ["margin": self.margin],
+                views: ["groupView": groupView]) as! [NSLayoutConstraint]
+            )
+        }
+
+        setupGroupView(self.actionGroupView)
+        setupGroupView(self.cancelGroupView)
+
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=margin)-[actionGroupView]-margin-[cancelGroupView]-margin-|",
+            options: .DirectionLeadingToTrailing,
+            metrics: ["margin": self.margin],
+            views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView]) as! [NSLayoutConstraint]
+        )
     }
 
-    private func constraintsForControls() -> [NSLayoutConstraint] {
+    private func constraintsForControls(controls: [UIControl]) -> [NSLayoutConstraint] {
         var constraints: [NSLayoutConstraint] = []
-
-        var controls = self.cancelControls
-        controls.extend(self.actionControls.reverse()) // when it comes to non cancel controls, we want to position them from top to bottom
 
         var sibling: UIControl?
         for control in controls {
+            var isLast = control == controls.last
             constraints.extend(self.horizontalConstraintsForControl(control))
-            constraints.extend(self.verticalConstraintsForControl(control, sibling: sibling))
+            constraints.extend(self.verticalConstraintsForControl(control, isLast: isLast, sibling: sibling))
 
             sibling = control
         }
@@ -110,28 +147,44 @@ public class AFMActionSheetController: UIViewController {
     }
 
     private func horizontalConstraintsForControl(control: UIControl) -> [NSLayoutConstraint] {
-        return NSLayoutConstraint.constraintsWithVisualFormat("H:|-margin-[control]-margin-|",
+        return NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[control]-0-|",
             options: .DirectionLeadingToTrailing,
-            metrics: ["margin": self.margin],
+            metrics: nil,
             views: ["control": control]) as! [NSLayoutConstraint]
     }
 
-    private func verticalConstraintsForControl(control: UIControl, sibling: UIControl?) -> [NSLayoutConstraint] {
+    private func verticalConstraintsForControl(control: UIControl, isLast: Bool, sibling: UIControl?) -> [NSLayoutConstraint] {
+        var constraints: [NSLayoutConstraint] = []
         if let sibling = sibling {
-            var spacing = self.spacing
-            if !contains(self.cancelControls, control) && contains(self.cancelControls, sibling) {
-                spacing = margin
-            }
-            return NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-spacing-[sibling]",
+            constraints.extend(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-spacing-[sibling]",
                 options: .DirectionLeadingToTrailing,
-                metrics: ["spacing": spacing, "height": self.controlHeight],
-                views: ["control": control, "sibling": sibling]) as! [NSLayoutConstraint]
+                metrics: ["spacing": self.spacing, "height": self.controlHeight],
+                views: ["control": control, "sibling": sibling]) as! [NSLayoutConstraint])
         } else {
-            return NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-margin-|",
+            constraints.extend(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-0-|",
                 options: .DirectionLeadingToTrailing,
-                metrics: ["margin": self.margin, "height": self.controlHeight],
-                views: ["control": control]) as! [NSLayoutConstraint]
+                metrics: ["height": self.controlHeight],
+                views: ["control": control]) as! [NSLayoutConstraint])
         }
+        if isLast {
+            constraints.extend(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[control(height)]",
+                options: .DirectionLeadingToTrailing,
+                metrics: ["height": self.controlHeight],
+                views: ["control": control]) as! [NSLayoutConstraint])
+        }
+        return constraints
+    }
+
+    private func updateUI() {
+        self.view.removeConstraints(self.view.constraints())
+        self.setupGroupViews()
+
+        self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
+        self.cancelControlConstraints = self.constraintsForControls(self.cancelControls)
+        self.cancelGroupView.addConstraints(self.cancelControlConstraints)
+        self.actionGroupView.removeConstraints(self.actionControlConstraints)
+        self.actionControlConstraints = self.constraintsForControls(self.actionControls)
+        self.actionGroupView.addConstraints(self.actionControlConstraints)
     }
 
     func handleTaps(sender: UIControl) {
