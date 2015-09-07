@@ -42,10 +42,11 @@ public class AFMActionSheetController: UIViewController {
         self.view.addSubview(self.cancelGroupView)
         self.setupGroupViews()
 
-        var gestureRecognizer = UIPanGestureRecognizer(target: self, action: "recognizePans:")
+        var swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeSwipes:")
+        swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
         var tapPestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeTaps:")
         tapPestureRecognizer.cancelsTouchesInView = false
-        self.view.addGestureRecognizer(gestureRecognizer)
+        self.view.addGestureRecognizer(swipeGestureRecognizer)
         self.view.addGestureRecognizer(tapPestureRecognizer)
     }
 
@@ -209,13 +210,8 @@ public class AFMActionSheetController: UIViewController {
         }
     }
 
-    func recognizePans(gestureRecognizer: UIPanGestureRecognizer) {
-        var velocity = gestureRecognizer.velocityInView(self.view)
-        var isVertical = velocity.y > velocity.x
-        var isDown = velocity.y > 0
-        if  isVertical && isDown  {
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
+    func recognizeSwipes(gestureRecognizer: UISwipeGestureRecognizer) {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
 
