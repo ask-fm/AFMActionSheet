@@ -41,6 +41,12 @@ public class AFMActionSheetController: UIViewController {
         self.view.addSubview(self.actionGroupView)
         self.view.addSubview(self.cancelGroupView)
         self.setupGroupViews()
+
+        var gestureRecognizer = UIPanGestureRecognizer(target: self, action: "recognizePans:")
+        var tapPestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeTaps:")
+        tapPestureRecognizer.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(gestureRecognizer)
+        self.view.addGestureRecognizer(tapPestureRecognizer)
     }
 
     public convenience init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?, transitioningDelegate: UIViewControllerTransitioningDelegate) {
@@ -192,6 +198,23 @@ public class AFMActionSheetController: UIViewController {
         var action = self.actions[index]
         if action.enabled {
             self.dismissViewControllerAnimated(true, completion: { _ in action.handler?(action) })
+        }
+    }
+
+    func recognizeTaps(gestureRecognizer: UITapGestureRecognizer) {
+        var point = gestureRecognizer.locationInView(self.view)
+        var view = self.view.hitTest(point, withEvent: nil)
+        if (view == self.view) {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+    }
+
+    func recognizePans(gestureRecognizer: UIPanGestureRecognizer) {
+        var velocity = gestureRecognizer.velocityInView(self.view)
+        var isVertical = velocity.y > velocity.x
+        var isDown = velocity.y > 0
+        if  isVertical && isDown  {
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
 }
