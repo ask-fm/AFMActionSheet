@@ -42,12 +42,12 @@ public class AFMActionSheetController: UIViewController {
         self.view.addSubview(self.cancelGroupView)
         self.setupGroupViews()
 
-        var swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeSwipes:")
+        var swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeGestures:")
         swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
-        var tapPestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeTaps:")
-        tapPestureRecognizer.cancelsTouchesInView = false
+        var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeGestures:")
+        tapGestureRecognizer.cancelsTouchesInView = false
         self.view.addGestureRecognizer(swipeGestureRecognizer)
-        self.view.addGestureRecognizer(tapPestureRecognizer)
+        self.view.addGestureRecognizer(tapGestureRecognizer)
     }
 
     public convenience init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?, transitioningDelegate: UIViewControllerTransitioningDelegate) {
@@ -202,16 +202,12 @@ public class AFMActionSheetController: UIViewController {
         }
     }
 
-    func recognizeTaps(gestureRecognizer: UITapGestureRecognizer) {
+    func recognizeGestures(gestureRecognizer: UIGestureRecognizer) {
         var point = gestureRecognizer.locationInView(self.view)
         var view = self.view.hitTest(point, withEvent: nil)
         if (view == self.view) {
             self.dismissViewControllerAnimated(true, completion: nil)
         }
-    }
-
-    func recognizeSwipes(gestureRecognizer: UISwipeGestureRecognizer) {
-        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
 
