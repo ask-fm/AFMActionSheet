@@ -42,9 +42,9 @@ public class AFMActionSheetController: UIViewController {
         self.view.addSubview(self.cancelGroupView)
         self.setupGroupViews()
 
-        var swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeGestures:")
+        let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeGestures:")
         swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
-        var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeGestures:")
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeGestures:")
         tapGestureRecognizer.cancelsTouchesInView = false
         self.view.addGestureRecognizer(swipeGestureRecognizer)
         self.view.addGestureRecognizer(tapGestureRecognizer)
@@ -61,7 +61,7 @@ public class AFMActionSheetController: UIViewController {
         self.init(nibName: nil, bundle: nil, transitioningDelegate: transitioningDelegate)
     }
 
-    required public init(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
@@ -69,12 +69,12 @@ public class AFMActionSheetController: UIViewController {
     // MARK: Adding actions
 
     public func addAction(action: AFMAction) {
-        var control = UIButton.controlWithAction(action)
+        let control = UIButton.controlWithAction(action)
         self.addAction(action, control: control)
     }
 
     public func addCancelAction(action: AFMAction) {
-        var control = UIButton.controlWithAction(action)
+        let control = UIButton.controlWithAction(action)
         self.addCancelAction(action, control: control)
     }
 
@@ -99,7 +99,7 @@ public class AFMActionSheetController: UIViewController {
             self.actionControls.insert(control, atIndex: 0)
         }
 
-        control.setTranslatesAutoresizingMaskIntoConstraints(false)
+        control.translatesAutoresizingMaskIntoConstraints = false
         if isCancelAction {
             self.cancelGroupView.addSubview(control)
             self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
@@ -120,11 +120,11 @@ public class AFMActionSheetController: UIViewController {
         let setupGroupView: UIView -> Void = { groupView in
             groupView.clipsToBounds = true
             groupView.layer.cornerRadius = CGFloat(self.cornerRadius)
-            groupView.setTranslatesAutoresizingMaskIntoConstraints(false)
+            groupView.translatesAutoresizingMaskIntoConstraints = false
             self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-margin-[groupView]-margin-|",
                 options: .DirectionLeadingToTrailing,
                 metrics: ["margin": self.margin],
-                views: ["groupView": groupView]) as! [NSLayoutConstraint]
+                views: ["groupView": groupView]) 
             )
         }
 
@@ -134,7 +134,7 @@ public class AFMActionSheetController: UIViewController {
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=margin)-[actionGroupView]-margin-[cancelGroupView]-margin-|",
             options: .DirectionLeadingToTrailing,
             metrics: ["margin": self.margin],
-            views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView]) as! [NSLayoutConstraint]
+            views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView]) 
         )
     }
 
@@ -143,9 +143,9 @@ public class AFMActionSheetController: UIViewController {
 
         var sibling: UIControl?
         for control in controls {
-            var isLast = control == controls.last
-            constraints.extend(self.horizontalConstraintsForControl(control))
-            constraints.extend(self.verticalConstraintsForControl(control, isLast: isLast, sibling: sibling))
+            let isLast = control == controls.last
+            constraints.appendContentsOf(self.horizontalConstraintsForControl(control))
+            constraints.appendContentsOf(self.verticalConstraintsForControl(control, isLast: isLast, sibling: sibling))
 
             sibling = control
         }
@@ -157,33 +157,33 @@ public class AFMActionSheetController: UIViewController {
         return NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[control]-0-|",
             options: .DirectionLeadingToTrailing,
             metrics: nil,
-            views: ["control": control]) as! [NSLayoutConstraint]
+            views: ["control": control]) 
     }
 
     private func verticalConstraintsForControl(control: UIControl, isLast: Bool, sibling: UIControl?) -> [NSLayoutConstraint] {
         var constraints: [NSLayoutConstraint] = []
         if let sibling = sibling {
-            constraints.extend(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-spacing-[sibling]",
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-spacing-[sibling]",
                 options: .DirectionLeadingToTrailing,
                 metrics: ["spacing": self.spacing, "height": self.controlHeight],
-                views: ["control": control, "sibling": sibling]) as! [NSLayoutConstraint])
+                views: ["control": control, "sibling": sibling]) )
         } else {
-            constraints.extend(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-0-|",
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-0-|",
                 options: .DirectionLeadingToTrailing,
                 metrics: ["height": self.controlHeight],
-                views: ["control": control]) as! [NSLayoutConstraint])
+                views: ["control": control]) )
         }
         if isLast {
-            constraints.extend(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[control(height)]",
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[control(height)]",
                 options: .DirectionLeadingToTrailing,
                 metrics: ["height": self.controlHeight],
-                views: ["control": control]) as! [NSLayoutConstraint])
+                views: ["control": control]) )
         }
         return constraints
     }
 
     private func updateUI() {
-        self.view.removeConstraints(self.view.constraints())
+        self.view.removeConstraints(self.view.constraints)
         self.setupGroupViews()
 
         self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
@@ -195,16 +195,16 @@ public class AFMActionSheetController: UIViewController {
     }
 
     func handleTaps(sender: UIControl) {
-        var index = sender.tag
-        var action = self.actions[index]
+        let index = sender.tag
+        let action = self.actions[index]
         if action.enabled {
             self.dismissViewControllerAnimated(true, completion: { _ in action.handler?(action) })
         }
     }
 
     func recognizeGestures(gestureRecognizer: UIGestureRecognizer) {
-        var point = gestureRecognizer.locationInView(self.view)
-        var view = self.view.hitTest(point, withEvent: nil)
+        let point = gestureRecognizer.locationInView(self.view)
+        let view = self.view.hitTest(point, withEvent: nil)
         if (view == self.view) {
             self.dismissViewControllerAnimated(true, completion: nil)
         }
@@ -216,7 +216,7 @@ public class AFMActionSheetController: UIViewController {
 
 extension UIButton {
     class func controlWithAction(action: AFMAction) -> UIButton {
-        var button = UIButton()
+        let button = UIButton()
         button.backgroundColor = UIColor.whiteColor()
         button.setTitle(action.title, forState: .Normal)
         button.setTitleColor(UIColor.darkTextColor(), forState: .Normal)
