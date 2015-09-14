@@ -198,7 +198,27 @@ public class AFMActionSheetController: UIViewController {
         let index = sender.tag
         let action = self.actions[index]
         if action.enabled {
-            self.dismissViewControllerAnimated(true, completion: { _ in action.handler?(action) })
+            self.disableControls()
+            self.dismissViewControllerAnimated(true, completion: { _ in
+                self.enableControls()
+                action.handler?(action)
+            })
+        }
+    }
+
+    func enableControls() {
+        self.setUserInteractionOnControlsEnabled(true, controls: self.actionControls)
+        self.setUserInteractionOnControlsEnabled(true, controls: self.cancelControls)
+    }
+
+    func disableControls() {
+        self.setUserInteractionOnControlsEnabled(false, controls: self.actionControls)
+        self.setUserInteractionOnControlsEnabled(false, controls: self.cancelControls)
+    }
+
+    func setUserInteractionOnControlsEnabled(enabled: Bool, controls: [UIControl]) {
+        for control in controls {
+            control.userInteractionEnabled = enabled
         }
     }
 
