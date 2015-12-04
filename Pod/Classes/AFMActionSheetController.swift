@@ -31,6 +31,7 @@ public class AFMActionSheetController: UIViewController {
     public private(set) var actions: [AFMAction] = []
     public private(set) var actionControls: [UIControl] = []
     public private(set) var cancelControls: [UIControl] = []
+    public private(set) var titleView: UIView?
 
     private var actionControlConstraints: [NSLayoutConstraint] = []
     private var cancelControlConstraints: [NSLayoutConstraint] = []
@@ -114,14 +115,37 @@ public class AFMActionSheetController: UIViewController {
         if isCancelAction {
             self.cancelGroupView.addSubview(control)
             self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
-            self.cancelControlConstraints = self.constraintsForControls(self.cancelControls)
+            self.cancelControlConstraints = self.constraintsForViews(self.cancelControls)
             self.cancelGroupView.addConstraints(self.cancelControlConstraints)
         } else {
             self.actionGroupView.addSubview(control)
             self.actionGroupView.removeConstraints(self.actionControlConstraints)
-            self.actionControlConstraints = self.constraintsForControls(self.actionControls)
+            self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
             self.actionGroupView.addConstraints(self.actionControlConstraints)
         }
+    }
+
+    public func addTitle(title: String) {
+        let label = UILabel.titleWithText(title)
+        self.addTitleView(label)
+    }
+
+    public func addTitleView(titleView: UIView) {
+        self.titleView = titleView
+
+        self.titleView!.translatesAutoresizingMaskIntoConstraints = false
+        self.actionGroupView.addSubview(self.titleView!)
+        self.actionGroupView.removeConstraints(self.actionControlConstraints)
+        self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
+        self.actionGroupView.addConstraints(self.actionControlConstraints)
+    }
+
+    private func actionControlsWithTitle() -> [UIView] {
+        var views: [UIView] = self.actionControls
+        if let titleView = self.titleView {
+            views.append(titleView)
+        }
+        return views
     }
 
 
@@ -149,46 +173,50 @@ public class AFMActionSheetController: UIViewController {
         )
     }
 
-    private func constraintsForControls(controls: [UIControl]) -> [NSLayoutConstraint] {
+    private func constraintsForViews(views: [UIView]) -> [NSLayoutConstraint] {
         var constraints: [NSLayoutConstraint] = []
 
-        var sibling: UIControl?
-        for control in controls {
-            let isLast = control == controls.last
-            constraints.appendContentsOf(self.horizontalConstraintsForControl(control))
-            constraints.appendContentsOf(self.verticalConstraintsForControl(control, isLast: isLast, sibling: sibling))
+        var sibling: UIView?
+        for view in views {
+            let isLast = view == views.last
+            constraints.appendContentsOf(self.horizontalConstraintsForView(view))
+            constraints.appendContentsOf(self.verticalConstraintsForView(view, isLast: isLast, sibling: sibling))
 
-            sibling = control
+            sibling = view
         }
         
         return constraints
     }
 
-    private func horizontalConstraintsForControl(control: UIControl) -> [NSLayoutConstraint] {
-        return NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[control]-0-|",
+    private func horizontalConstraintsForView(view: UIView) -> [NSLayoutConstraint] {
+        return NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[view]-0-|",
             options: .DirectionLeadingToTrailing,
             metrics: nil,
-            views: ["control": control]) 
+            views: ["view": view])
     }
 
-    private func verticalConstraintsForControl(control: UIControl, isLast: Bool, sibling: UIControl?) -> [NSLayoutConstraint] {
+    private func verticalConstraintsForView(view: UIView, isLast: Bool, sibling: UIView?) -> [NSLayoutConstraint] {
         var constraints: [NSLayoutConstraint] = []
+        var height = self.controlHeight
+        if view == self.titleView {
+            height = self.titleHeight
+        }
         if let sibling = sibling {
-            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-spacing-[sibling]",
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[view(height)]-spacing-[sibling]",
                 options: .DirectionLeadingToTrailing,
-                metrics: ["spacing": self.spacing, "height": self.controlHeight],
-                views: ["control": control, "sibling": sibling]) )
+                metrics: ["spacing": self.spacing, "height": height],
+                views: ["view": view, "sibling": sibling]) )
         } else {
-            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[control(height)]-0-|",
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[view(height)]-0-|",
                 options: .DirectionLeadingToTrailing,
-                metrics: ["height": self.controlHeight],
-                views: ["control": control]) )
+                metrics: ["height": height],
+                views: ["view": view]) )
         }
         if isLast {
-            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[control(height)]",
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]",
                 options: .DirectionLeadingToTrailing,
-                metrics: ["height": self.controlHeight],
-                views: ["control": control]) )
+                metrics: nil,
+                views: ["view": view]) )
         }
         return constraints
     }
@@ -198,10 +226,10 @@ public class AFMActionSheetController: UIViewController {
         self.setupGroupViews()
 
         self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
-        self.cancelControlConstraints = self.constraintsForControls(self.cancelControls)
+        self.cancelControlConstraints = self.constraintsForViews(self.cancelControls)
         self.cancelGroupView.addConstraints(self.cancelControlConstraints)
         self.actionGroupView.removeConstraints(self.actionControlConstraints)
-        self.actionControlConstraints = self.constraintsForControls(self.actionControls)
+        self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
         self.actionGroupView.addConstraints(self.actionControlConstraints)
     }
 
@@ -255,5 +283,16 @@ extension UIButton {
         button.setTitleColor(UIColor.redColor(), forState: .Highlighted)
 
         return button
+    }
+}
+
+extension UILabel {
+    class func titleWithText(text: String) -> UILabel {
+        let title = UILabel()
+        title.text = text
+        title.textAlignment = .Center
+        title.backgroundColor = UIColor.whiteColor()
+
+        return title
     }
 }
