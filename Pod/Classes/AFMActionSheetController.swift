@@ -9,16 +9,22 @@
 @IBDesignable
 public class AFMActionSheetController: UIViewController {
 
-    @IBInspectable public var controlHeight: Int   = 50 {
+    @IBInspectable public var controlHeight: Int        = 50 {
         didSet { self.updateUI() }
     }
-    @IBInspectable public var spacing: Int         = 4  {
+    @IBInspectable public var titleHeight: Int          = 50 {
         didSet { self.updateUI() }
     }
-    @IBInspectable public var margin: Int          = 16 {
+    @IBInspectable public var spacing: Int              = 4  {
         didSet { self.updateUI() }
     }
-    @IBInspectable public var cornerRadius: Int    = 10 {
+    @IBInspectable public var horizontalMargin: Int     = 16 {
+        didSet { self.updateUI() }
+    }
+    @IBInspectable public var verticalMargin: Int       = 16 {
+        didSet { self.updateUI() }
+    }
+    @IBInspectable public var cornerRadius: Int         = 10 {
         didSet { self.updateUI() }
     }
 
@@ -128,7 +134,7 @@ public class AFMActionSheetController: UIViewController {
             groupView.translatesAutoresizingMaskIntoConstraints = false
             self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-margin-[groupView]-margin-|",
                 options: .DirectionLeadingToTrailing,
-                metrics: ["margin": self.margin],
+                metrics: ["margin": self.horizontalMargin],
                 views: ["groupView": groupView]) 
             )
         }
@@ -138,7 +144,7 @@ public class AFMActionSheetController: UIViewController {
 
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=margin)-[actionGroupView]-margin-[cancelGroupView]-margin-|",
             options: .DirectionLeadingToTrailing,
-            metrics: ["margin": self.margin],
+            metrics: ["margin": self.verticalMargin],
             views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView]) 
         )
     }
