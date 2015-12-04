@@ -38,6 +38,20 @@ public class AFMActionSheetController: UIViewController {
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.setupViews()
+    }
+
+    public init(transitioningDelegate: UIViewControllerTransitioningDelegate) {
+        super.init(nibName: nil, bundle: nil)
+        self.setupViews()
+        self.setupTranstioningDelegate(transitioningDelegate)
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+    private func setupViews() {
         self.view.addSubview(self.actionGroupView)
         self.view.addSubview(self.cancelGroupView)
         self.setupGroupViews()
@@ -50,19 +64,10 @@ public class AFMActionSheetController: UIViewController {
         self.view.addGestureRecognizer(tapGestureRecognizer)
     }
 
-    public convenience init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?, transitioningDelegate: UIViewControllerTransitioningDelegate) {
-        self.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    public func setupTranstioningDelegate(transitioningDelegate: UIViewControllerTransitioningDelegate) {
         self.modalPresentationStyle = .Custom
         self.actionSheetTransitioningDelegate = transitioningDelegate
         self.transitioningDelegate = self.actionSheetTransitioningDelegate
-    }
-
-    public convenience init(transitioningDelegate: UIViewControllerTransitioningDelegate) {
-        self.init(nibName: nil, bundle: nil, transitioningDelegate: transitioningDelegate)
-    }
-
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 
 
