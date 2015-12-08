@@ -12,7 +12,7 @@ public class AFMActionSheetController: UIViewController {
     @IBInspectable public var controlHeight: Int        = 50 {
         didSet { self.updateUI() }
     }
-    @IBInspectable public var titleHeight: Int          = 50 {
+    @IBInspectable public var minTitleHeight: Int       = 50 {
         didSet { self.updateUI() }
     }
     @IBInspectable public var spacing: Int              = 4  {
@@ -159,7 +159,7 @@ public class AFMActionSheetController: UIViewController {
             self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-margin-[groupView]-margin-|",
                 options: .DirectionLeadingToTrailing,
                 metrics: ["margin": self.horizontalMargin],
-                views: ["groupView": groupView]) 
+                views: ["groupView": groupView])
             )
         }
 
@@ -169,7 +169,7 @@ public class AFMActionSheetController: UIViewController {
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=margin)-[actionGroupView]-margin-[cancelGroupView]-margin-|",
             options: .DirectionLeadingToTrailing,
             metrics: ["margin": self.verticalMargin],
-            views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView]) 
+            views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView])
         )
     }
 
@@ -199,7 +199,8 @@ public class AFMActionSheetController: UIViewController {
         var constraints: [NSLayoutConstraint] = []
         var height = self.controlHeight
         if view == self.titleView {
-            height = self.titleHeight
+            height = Int(self.titleView!.frame.size.height)
+            if height < self.minTitleHeight { height = self.minTitleHeight }
         }
         if let sibling = sibling {
             constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[view(height)]-spacing-[sibling]",
