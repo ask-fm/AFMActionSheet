@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Ask.fm Europe, Ltd. All rights reserved.
 //
 
+import UIKit
+
 public class AFMActionSheetTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate {
 
     public func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {

@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Ask.fm Europe, Ltd. All rights reserved.
 //
 
+import UIKit
+
 public class AFMDismissalAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     var animator: UIDynamicAnimator?
 
