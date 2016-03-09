@@ -61,8 +61,6 @@ public class AFMActionSheetController: UIViewController {
     }
 
     private func setupViews() {
-        self.view.addSubview(self.actionGroupView)
-        self.view.addSubview(self.cancelGroupView)
         self.setupGroupViews()
 
         let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeGestures:")
@@ -106,6 +104,7 @@ public class AFMActionSheetController: UIViewController {
         control.tag = self.actions.count
 
         self.actions.append(action)
+
         if isCancelAction {
             self.cancelControls.append(control)
         } else {
@@ -113,18 +112,7 @@ public class AFMActionSheetController: UIViewController {
             self.actionControls.insert(control, atIndex: 0)
         }
 
-        control.translatesAutoresizingMaskIntoConstraints = false
-        if isCancelAction {
-            self.cancelGroupView.addSubview(control)
-            self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
-            self.cancelControlConstraints = self.constraintsForViews(self.cancelControls)
-            self.cancelGroupView.addConstraints(self.cancelControlConstraints)
-        } else {
-            self.actionGroupView.addSubview(control)
-            self.actionGroupView.removeConstraints(self.actionControlConstraints)
-            self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
-            self.actionGroupView.addConstraints(self.actionControlConstraints)
-        }
+        self.addControlToGroupView(control: control, isCancelAction: isCancelAction)
     }
 
     public func addTitle(title: String) {
@@ -137,9 +125,18 @@ public class AFMActionSheetController: UIViewController {
 
         self.titleView!.translatesAutoresizingMaskIntoConstraints = false
         self.actionGroupView.addSubview(self.titleView!)
-        self.actionGroupView.removeConstraints(self.actionControlConstraints)
-        self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
-        self.actionGroupView.addConstraints(self.actionControlConstraints)
+        self.updateActionContraints()
+    }
+
+    func addControlToGroupView(control control: UIControl, isCancelAction: Bool) {
+        control.translatesAutoresizingMaskIntoConstraints = false
+        if isCancelAction {
+            self.cancelGroupView.addSubview(control)
+            self.updateCancelContraints()
+        } else {
+            self.actionGroupView.addSubview(control)
+            self.updateActionContraints()
+        }
     }
 
     private func actionControlsWithTitle() -> [UIView] {
@@ -150,10 +147,25 @@ public class AFMActionSheetController: UIViewController {
         return views
     }
 
+    func updateCancelContraints() {
+        self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
+        self.cancelControlConstraints = self.constraintsForViews(self.cancelControls)
+        self.cancelGroupView.addConstraints(self.cancelControlConstraints)
+    }
+
+    func updateActionContraints() {
+        self.actionGroupView.removeConstraints(self.actionControlConstraints)
+        self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
+        self.actionGroupView.addConstraints(self.actionControlConstraints)
+    }
+
 
     // MARK: Control positioning
 
     private func setupGroupViews() {
+        self.view.addSubview(self.actionGroupView)
+        self.view.addSubview(self.cancelGroupView)
+
         let setupGroupView: UIView -> Void = { groupView in
             groupView.clipsToBounds = true
             groupView.layer.cornerRadius = CGFloat(self.cornerRadius)
@@ -228,12 +240,8 @@ public class AFMActionSheetController: UIViewController {
         self.view.removeConstraints(self.view.constraints)
         self.setupGroupViews()
 
-        self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
-        self.cancelControlConstraints = self.constraintsForViews(self.cancelControls)
-        self.cancelGroupView.addConstraints(self.cancelControlConstraints)
-        self.actionGroupView.removeConstraints(self.actionControlConstraints)
-        self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
-        self.actionGroupView.addConstraints(self.actionControlConstraints)
+        self.updateCancelContraints()
+        self.updateActionContraints()
     }
 
     func handleTaps(sender: UIControl) {
