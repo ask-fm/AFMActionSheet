@@ -11,6 +11,11 @@ import UIKit
 @IBDesignable
 public class AFMActionSheetController: UIViewController {
 
+    public enum ControllerStyle : Int {
+        case ActionSheet
+        case Alert
+    }
+
     @IBInspectable public var controlHeight: Int        = 50 {
         didSet { self.updateUI() }
     }
@@ -30,6 +35,8 @@ public class AFMActionSheetController: UIViewController {
         didSet { self.updateUI() }
     }
 
+    private let controllerStyle: ControllerStyle
+
     public private(set) var actions: [AFMAction] = []
     public private(set) var actionControls: [UIControl] = []
     public private(set) var cancelControls: [UIControl] = []
@@ -46,18 +53,26 @@ public class AFMActionSheetController: UIViewController {
     // MARK: Initializers
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        self.controllerStyle = .ActionSheet
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.setupViews()
     }
 
-    public init(transitioningDelegate: UIViewControllerTransitioningDelegate) {
+    public init(style: ControllerStyle, transitioningDelegate: UIViewControllerTransitioningDelegate) {
+        self.controllerStyle = style
         super.init(nibName: nil, bundle: nil)
         self.setupViews()
         self.setupTranstioningDelegate(transitioningDelegate)
     }
 
+    public convenience init(transitioningDelegate: UIViewControllerTransitioningDelegate) {
+        self.init(style: .ActionSheet, transitioningDelegate: transitioningDelegate)
+    }
+
     required public init?(coder aDecoder: NSCoder) {
+        self.controllerStyle = .ActionSheet
         super.init(coder: aDecoder)
+        self.setupViews()
     }
 
     private func setupViews() {
@@ -125,18 +140,32 @@ public class AFMActionSheetController: UIViewController {
 
         self.titleView!.translatesAutoresizingMaskIntoConstraints = false
         self.actionGroupView.addSubview(self.titleView!)
-        self.updateActionContraints()
+        self.updateContraints()
     }
 
-    func addControlToGroupView(control control: UIControl, isCancelAction: Bool) {
+
+    private func addControlToGroupView(control control: UIControl, isCancelAction: Bool) {
+        if self.controllerStyle == .ActionSheet {
+            self.addControlToGroupViewForActionSheet(control: control, isCancelAction: isCancelAction)
+        } else if self.controllerStyle == .Alert {
+            self.addControlToGroupViewForAlert(control: control, isCancelAction: isCancelAction)
+        }
+    }
+
+    private func addControlToGroupViewForActionSheet(control control: UIControl, isCancelAction: Bool) {
         control.translatesAutoresizingMaskIntoConstraints = false
         if isCancelAction {
             self.cancelGroupView.addSubview(control)
-            self.updateCancelContraints()
         } else {
             self.actionGroupView.addSubview(control)
-            self.updateActionContraints()
         }
+        self.updateContraints()
+    }
+
+    private func addControlToGroupViewForAlert(control control: UIControl, isCancelAction: Bool) {
+        control.translatesAutoresizingMaskIntoConstraints = false
+        self.actionGroupView.addSubview(control)
+        self.updateContraints()
     }
 
     private func actionControlsWithTitle() -> [UIView] {
@@ -147,15 +176,30 @@ public class AFMActionSheetController: UIViewController {
         return views
     }
 
-    func updateCancelContraints() {
+    func updateContraints() {
+        if self.controllerStyle == .ActionSheet {
+            self.updateContraintsForActionSheet()
+        } else if self.controllerStyle == .Alert {
+            self.updateContraintsForAlert()
+        }
+    }
+
+    func updateContraintsForActionSheet() {
         self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
         self.cancelControlConstraints = self.constraintsForViews(self.cancelControls)
         self.cancelGroupView.addConstraints(self.cancelControlConstraints)
-    }
 
-    func updateActionContraints() {
         self.actionGroupView.removeConstraints(self.actionControlConstraints)
         self.actionControlConstraints = self.constraintsForViews(self.actionControlsWithTitle())
+        self.actionGroupView.addConstraints(self.actionControlConstraints)
+    }
+
+    func updateContraintsForAlert() {
+        var views: [UIView] = self.actionControlsWithTitle()
+        let cancelViews: [UIView] = self.cancelControls
+        views.insertContentsOf(cancelViews, at: 0)
+        self.actionGroupView.removeConstraints(self.actionControlConstraints)
+        self.actionControlConstraints = self.constraintsForViews(views)
         self.actionGroupView.addConstraints(self.actionControlConstraints)
     }
 
@@ -163,6 +207,14 @@ public class AFMActionSheetController: UIViewController {
     // MARK: Control positioning
 
     private func setupGroupViews() {
+        if self.controllerStyle == .ActionSheet {
+            self.setupGroupViewsForActionSheet()
+        } else if self.controllerStyle == .Alert {
+            self.setupGroupViewsForAlert()
+        }
+    }
+
+    private func setupGroupViewsForActionSheet() {
         self.view.addSubview(self.actionGroupView)
         self.view.addSubview(self.cancelGroupView)
 
@@ -185,6 +237,27 @@ public class AFMActionSheetController: UIViewController {
             metrics: ["margin": self.verticalMargin],
             views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView])
         )
+    }
+
+    private func setupGroupViewsForAlert() {
+        self.view.addSubview(self.actionGroupView)
+
+        self.actionGroupView.clipsToBounds = true
+        self.actionGroupView.layer.cornerRadius = CGFloat(self.cornerRadius)
+        self.actionGroupView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-margin-[groupView]-margin-|",
+            options: .DirectionLeadingToTrailing,
+            metrics: ["margin": self.horizontalMargin],
+            views: ["groupView": self.actionGroupView])
+        )
+
+        self.view.addConstraint(NSLayoutConstraint(item: self.actionGroupView,
+            attribute: .CenterY,
+            relatedBy: .Equal,
+            toItem: self.view,
+            attribute: .CenterY,
+            multiplier: 1,
+            constant: 0))
     }
 
     private func constraintsForViews(views: [UIView]) -> [NSLayoutConstraint] {
@@ -239,9 +312,7 @@ public class AFMActionSheetController: UIViewController {
     private func updateUI() {
         self.view.removeConstraints(self.view.constraints)
         self.setupGroupViews()
-
-        self.updateCancelContraints()
-        self.updateActionContraints()
+        self.updateContraints()
     }
 
     func handleTaps(sender: UIControl) {
