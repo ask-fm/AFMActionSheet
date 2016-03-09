@@ -13,13 +13,13 @@ class ViewController: UIViewController {
 
     @IBAction func buttonTapped(sender: AnyObject) {
 
-        var actionSheet = AFMActionSheetController(transitioningDelegate: AFMActionSheetTransitioningDelegate())
+        let actionSheet = AFMActionSheetController(transitioningDelegate: AFMActionSheetTransitioningDelegate())
 
-        var action1 = AFMAction(title: "Action 1", enabled: true) { (action: AFMAction) -> Void in
-            println(action.title)
+        let action1 = AFMAction(title: "Action 1", enabled: true) { (action: AFMAction) -> Void in
+            print(action.title)
         }
-        var action2 = AFMAction(title: "Action 2", enabled: false, handler: nil)
-        var action3 = AFMAction(title: "Action 3", handler: nil)
+        let action2 = AFMAction(title: "Action 2", enabled: false, handler: nil)
+        let action3 = AFMAction(title: "Action 3", handler: nil)
 
         actionSheet.addAction(action1)
         actionSheet.addAction(action2)

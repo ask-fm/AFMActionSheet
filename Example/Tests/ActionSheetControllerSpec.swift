@@ -9,7 +9,7 @@ class ActionSheetControllerSpec: QuickSpec {
     override func spec() {
         describe("creating action sheet controller") {
             it("should have transition delegate and correct presentation style") {
-                var controller = AFMActionSheetController(transitioningDelegate: AFMActionSheetTransitioningDelegate())
+                let controller = AFMActionSheetController(transitioningDelegate: AFMActionSheetTransitioningDelegate())
                 expect(controller.transitioningDelegate).toNot(beNil())
                 expect(controller.modalPresentationStyle).to(equal(UIModalPresentationStyle.Custom))
             }
@@ -17,8 +17,8 @@ class ActionSheetControllerSpec: QuickSpec {
 
         describe("adding actions to controller") {
             it("should have correct number of actions") {
-                var controller = AFMActionSheetController()
-                var action = AFMAction(title: "action", enabled: true, handler: nil)
+                let controller = AFMActionSheetController()
+                let action = AFMAction(title: "action", enabled: true, handler: nil)
                 controller.addAction(action)
                 expect(controller.view.subviews.count).to(equal(1))
                 controller.addAction(action)
@@ -32,8 +32,8 @@ class ActionSheetControllerSpec: QuickSpec {
 
         describe("AFMActionSheetController", {
             it("has valid snapshot") {
-                var controller = AFMActionSheetController()
-                var action = AFMAction(title: "action", enabled: true, handler: nil)
+                let controller = AFMActionSheetController()
+                let action = AFMAction(title: "action", enabled: true, handler: nil)
                 controller.addAction(action)
                 controller.addAction(action)
                 controller.addCancelAction(action)

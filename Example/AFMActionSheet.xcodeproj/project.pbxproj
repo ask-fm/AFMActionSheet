@@ -13,8 +13,8 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* ActionSheetControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* ActionSheetControllerSpec.swift */; };
-		8ED3129CFD9D32BB1E30A849 /* Pods_AFMActionSheet_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FF35AA685ED529D74B357CF /* Pods_AFMActionSheet_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		ECB00F766E622E5C25C33B6F /* Pods_AFMActionSheet_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114D7FE84BE27055D7C5AFC6 /* Pods_AFMActionSheet_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		8ED3129CFD9D32BB1E30A849 /* Pods_AFMActionSheet_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FF35AA685ED529D74B357CF /* Pods_AFMActionSheet_Tests.framework */; };
+		ECB00F766E622E5C25C33B6F /* Pods_AFMActionSheet_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114D7FE84BE27055D7C5AFC6 /* Pods_AFMActionSheet_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -210,7 +210,8 @@
 		607FACC81AFB9204008FA782 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = CocoaPods;
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
@@ -437,6 +438,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -505,6 +507,7 @@
 				INFOPLIST_FILE = AFMActionSheet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -517,6 +520,7 @@
 				INFOPLIST_FILE = AFMActionSheet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -536,6 +540,7 @@
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AFMActionSheet_Example.app/AFMActionSheet_Example";
 			};
@@ -552,6 +557,7 @@
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AFMActionSheet_Example.app/AFMActionSheet_Example";
 			};

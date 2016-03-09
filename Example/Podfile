@@ -8,7 +8,7 @@ end
 target 'AFMActionSheet_Tests', :exclusive => true do
   pod "AFMActionSheet", :path => "../"
 
-  pod 'Quick', '~> 0.3.1'
+  pod 'Quick'
   pod 'Nimble'
   pod 'FBSnapshotTestCase'
   pod 'Nimble-Snapshots'
