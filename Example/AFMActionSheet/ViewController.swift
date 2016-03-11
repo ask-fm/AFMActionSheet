@@ -11,6 +11,8 @@ import AFMActionSheet
 
 class ViewController: UIViewController {
 
+    @IBOutlet var titleView: UIView!
+
     @IBAction func buttonTapped(sender: AnyObject) {
 
         let actionSheet = AFMActionSheetController(transitioningDelegate: AFMActionSheetTransitioningDelegate())
@@ -24,6 +26,7 @@ class ViewController: UIViewController {
         actionSheet.addAction(action1)
         actionSheet.addAction(action2)
         actionSheet.addCancelAction(action3)
+        actionSheet.addTitleView(self.titleView)
 
         self.presentViewController(actionSheet, animated: true, completion: nil)
 

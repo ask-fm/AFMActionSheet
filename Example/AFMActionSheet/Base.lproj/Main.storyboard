@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -33,9 +34,42 @@
                             <constraint firstAttribute="centerX" secondItem="KlS-G8-ccU" secondAttribute="centerX" id="RtS-wd-srV"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="titleView" destination="uGR-m4-6nQ" id="2BW-ya-clC"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="uGR-m4-6nQ" userLabel="Title View">
+                    <rect key="frame" x="0.0" y="0.0" width="318" height="165"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ship it!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zVG-B2-anM">
+                            <rect key="frame" x="133" y="8" width="53" height="18"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="shipit" translatesAutoresizingMaskIntoConstraints="NO" id="i0Z-2h-aE6">
+                            <rect key="frame" x="112" y="34" width="94" height="123"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="i0Z-2h-aE6" secondAttribute="height" multiplier="350:457" id="8XR-gT-bdb"/>
+                                <constraint firstAttribute="height" constant="123" id="MrK-dY-LLX"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="i0Z-2h-aE6" firstAttribute="top" secondItem="zVG-B2-anM" secondAttribute="bottom" constant="8" id="0AR-5N-zg5"/>
+                        <constraint firstItem="zVG-B2-anM" firstAttribute="centerX" secondItem="uGR-m4-6nQ" secondAttribute="centerX" id="HGM-uf-hYo"/>
+                        <constraint firstAttribute="bottom" secondItem="i0Z-2h-aE6" secondAttribute="bottom" constant="8" id="Yd8-e5-IQ3"/>
+                        <constraint firstItem="i0Z-2h-aE6" firstAttribute="centerX" secondItem="uGR-m4-6nQ" secondAttribute="centerX" id="mRG-fn-3rn"/>
+                        <constraint firstItem="zVG-B2-anM" firstAttribute="top" secondItem="uGR-m4-6nQ" secondAttribute="top" constant="8" id="rsn-Oc-lWq"/>
+                    </constraints>
+                </view>
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="shipit" width="350" height="457"/>
+    </resources>
 </document>
