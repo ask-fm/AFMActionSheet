@@ -296,18 +296,16 @@ public class AFMActionSheetController: UIViewController {
 
     private func verticalConstraintsForView(view: UIView, isLast: Bool, sibling: UIView?) -> [NSLayoutConstraint] {
         var constraints: [NSLayoutConstraint] = []
-        var height = self.controlHeight
-        if view == self.titleView {
-            height = Int(self.titleView!.frame.size.height)
-            if height < self.minTitleHeight { height = self.minTitleHeight }
-        }
+        let height = view != self.titleView ? self.controlHeight : self.minTitleHeight
         if let sibling = sibling {
-            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[view(height)]-spacing-[sibling]",
+            let format = view != self.titleView ? "V:[view(height)]-spacing-[sibling]" : "V:[view(>=height)]-spacing-[sibling]"
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat(format,
                 options: .DirectionLeadingToTrailing,
                 metrics: ["spacing": self.spacing, "height": height],
                 views: ["view": view, "sibling": sibling]) )
         } else {
-            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat("V:[view(height)]-0-|",
+            let format = view != self.titleView ? "V:[view(height)]-0-|" : "V:[view(>=height)]-0-|"
+            constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat(format,
                 options: .DirectionLeadingToTrailing,
                 metrics: ["height": height],
                 views: ["view": view]) )
