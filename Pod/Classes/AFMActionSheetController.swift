@@ -16,6 +16,8 @@ public class AFMActionSheetController: UIViewController {
         case Alert
     }
 
+    @IBInspectable public var outsideGestureShouldDismiss: Bool = true
+
     @IBInspectable public var controlHeight: Int        = 50 {
         didSet { self.updateUI() }
     }
@@ -35,6 +37,10 @@ public class AFMActionSheetController: UIViewController {
         didSet { self.updateUI() }
     }
 
+    @IBInspectable public var spacingColor: UIColor = UIColor.clearColor() {
+        didSet { self.updateUI() }
+    }
+
     private let controllerStyle: ControllerStyle
 
     public private(set) var actions: [AFMAction] = []
@@ -49,6 +55,7 @@ public class AFMActionSheetController: UIViewController {
 
     private var actionGroupView: UIView = UIView()
     private var cancelGroupView: UIView = UIView()
+
 
     // MARK: Initializers
 
@@ -176,6 +183,9 @@ public class AFMActionSheetController: UIViewController {
         return views
     }
 
+
+    // MARK: Control positioning and updating
+
     func updateContraints() {
         if self.controllerStyle == .ActionSheet {
             self.updateContraintsForActionSheet()
@@ -203,18 +213,19 @@ public class AFMActionSheetController: UIViewController {
         self.actionGroupView.addConstraints(self.actionControlConstraints)
     }
 
-
-    // MARK: Control positioning
-
     private func setupGroupViews() {
         if self.controllerStyle == .ActionSheet {
             self.setupGroupViewsForActionSheet()
         } else if self.controllerStyle == .Alert {
             self.setupGroupViewsForAlert()
         }
+        self.actionGroupView.backgroundColor = self.spacingColor
+        self.cancelGroupView.backgroundColor = self.spacingColor
     }
 
     private func setupGroupViewsForActionSheet() {
+        self.actionGroupView.removeFromSuperview()
+        self.cancelGroupView.removeFromSuperview()
         self.view.addSubview(self.actionGroupView)
         self.view.addSubview(self.cancelGroupView)
 
@@ -240,6 +251,7 @@ public class AFMActionSheetController: UIViewController {
     }
 
     private func setupGroupViewsForAlert() {
+        self.actionGroupView.removeFromSuperview()
         self.view.addSubview(self.actionGroupView)
 
         self.actionGroupView.clipsToBounds = true
@@ -315,6 +327,9 @@ public class AFMActionSheetController: UIViewController {
         self.updateContraints()
     }
 
+
+    // MARK: Event handling
+
     func handleTaps(sender: UIControl) {
         let index = sender.tag
         let action = self.actions[index]
@@ -346,7 +361,7 @@ public class AFMActionSheetController: UIViewController {
     func recognizeGestures(gestureRecognizer: UIGestureRecognizer) {
         let point = gestureRecognizer.locationInView(self.view)
         let view = self.view.hitTest(point, withEvent: nil)
-        if (view == self.view) {
+        if (view == self.view && self.outsideGestureShouldDismiss) {
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
