@@ -172,7 +172,6 @@
 				607FACCE1AFB9204008FA782 /* Resources */,
 				A45C42FC80278DC7F1D33FBA /* Embed Pods Frameworks */,
 				2B5EA3312CA9F44C9E27EB48 /* Copy Pods Resources */,
-				948087D41B8F0FDB0036EF2F /* Mark TODO: and FIXME: as warnings */,
 			);
 			buildRules = (
 			);
@@ -322,20 +321,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AFMActionSheet_Tests/Pods-AFMActionSheet_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		948087D41B8F0FDB0036EF2F /* Mark TODO: and FIXME: as warnings */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Mark TODO: and FIXME: as warnings";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "TAGS=\"TODO:|FIXME:\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"";
 		};
 		A45C42FC80278DC7F1D33FBA /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -14,8 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet var titleView: UIView!
 
     @IBAction func buttonTapped(sender: AnyObject) {
-
-        let actionSheet = AFMActionSheetController(transitioningDelegate: AFMActionSheetTransitioningDelegate())
+        let actionSheet = AFMActionSheetController(style: .ActionSheet, transitioningDelegate: AFMActionSheetTransitioningDelegate())
 
         let action1 = AFMAction(title: "Action 1", enabled: true) { (action: AFMAction) -> Void in
             print(action.title)
@@ -29,7 +28,6 @@ class ViewController: UIViewController {
         actionSheet.addTitleView(self.titleView)
 
         self.presentViewController(actionSheet, animated: true, completion: nil)
-
     }
 }
 

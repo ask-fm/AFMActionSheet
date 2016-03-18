@@ -13,3 +13,9 @@ target 'AFMActionSheet_Tests', :exclusive => true do
   pod 'FBSnapshotTestCase'
   pod 'Nimble-Snapshots'
 end
+
+post_install do |installer|
+  target = installer.pods_project.targets.find { |target| target.name == 'AFMActionSheet' }
+  debug_config = target.build_configurations.find { |config| config.name == 'Debug' }
+  debug_config.build_settings['ENABLE_TESTABILITY'] = 'YES'
+end

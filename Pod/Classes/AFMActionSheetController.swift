@@ -41,7 +41,7 @@ public class AFMActionSheetController: UIViewController {
         didSet { self.updateUI() }
     }
 
-    private let controllerStyle: ControllerStyle
+    let controllerStyle: ControllerStyle
 
     public private(set) var actions: [AFMAction] = []
     public private(set) var actionControls: [UIControl] = []
@@ -53,27 +53,31 @@ public class AFMActionSheetController: UIViewController {
 
     private var actionSheetTransitioningDelegate: UIViewControllerTransitioningDelegate?
 
-    private var actionGroupView: UIView = UIView()
-    private var cancelGroupView: UIView = UIView()
+    var actionGroupView: UIView = UIView()
+    var cancelGroupView: UIView = UIView()
 
 
     // MARK: Initializers
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        self.controllerStyle = .ActionSheet
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.setupViews()
-    }
-
-    public init(style: ControllerStyle, transitioningDelegate: UIViewControllerTransitioningDelegate) {
+    public init(style: ControllerStyle) {
         self.controllerStyle = style
         super.init(nibName: nil, bundle: nil)
         self.setupViews()
+    }
+
+    public convenience init(style: ControllerStyle, transitioningDelegate: UIViewControllerTransitioningDelegate) {
+        self.init(style: style)
         self.setupTranstioningDelegate(transitioningDelegate)
     }
 
     public convenience init(transitioningDelegate: UIViewControllerTransitioningDelegate) {
         self.init(style: .ActionSheet, transitioningDelegate: transitioningDelegate)
+    }
+
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        self.controllerStyle = .ActionSheet
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.setupViews()
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -224,12 +228,9 @@ public class AFMActionSheetController: UIViewController {
     }
 
     private func setupGroupViewsForActionSheet() {
-        self.actionGroupView.removeFromSuperview()
-        self.cancelGroupView.removeFromSuperview()
-        self.view.addSubview(self.actionGroupView)
-        self.view.addSubview(self.cancelGroupView)
-
         let setupGroupView: UIView -> Void = { groupView in
+            groupView.removeFromSuperview()
+            self.view.addSubview(groupView)
             groupView.clipsToBounds = true
             groupView.layer.cornerRadius = CGFloat(self.cornerRadius)
             groupView.translatesAutoresizingMaskIntoConstraints = false
