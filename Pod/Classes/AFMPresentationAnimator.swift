@@ -11,28 +11,44 @@ import UIKit
 public class AFMPresentationAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
     public func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
-        return 0.7;
+        return 1.0
     }
 
     public func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
-        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
+        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as UIViewController!
+        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as UIViewController!
 
-        let finalFrame = transitionContext.initialFrameForViewController(fromViewController!)
-        let initialFrame = CGRectOffset(finalFrame, 0, finalFrame.height)
+        let finalFrame = transitionContext.initialFrameForViewController(fromViewController)
 
-        toViewController?.view.frame = initialFrame
-        transitionContext.containerView()!.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0)
-        transitionContext.containerView()!.addSubview(toViewController!.view)
+        toViewController.view.frame = finalFrame
+        transitionContext.containerView()!.addSubview(toViewController.view)
+
+        let views = toViewController.view.subviews
+        let viewCount = Double(views.count)
+        var index = 0
+
+        let step: Double = self.transitionDuration(transitionContext) * 0.5 / viewCount
+        for view in views {
+            view.transform = CGAffineTransformMakeTranslation(0, finalFrame.height)
+
+            let delay = step * Double(index)
+            UIView.animateWithDuration(self.transitionDuration(transitionContext) - delay,
+                delay: delay,
+                usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 0.3,
+                options: [],
+                animations: {
+                    view.transform = CGAffineTransformIdentity;
+                }, completion: nil)
+            index++
+        }
+
+        let backgroundColor = toViewController.view.backgroundColor!
+        toViewController.view.backgroundColor = backgroundColor.colorWithAlphaComponent(0)
 
         UIView.animateWithDuration(self.transitionDuration(transitionContext),
-            delay: 0,
-            usingSpringWithDamping: 0.7,
-            initialSpringVelocity: 0.9,
-            options: UIViewAnimationOptions.CurveEaseInOut,
             animations: { _ in
-                transitionContext.containerView()!.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-                toViewController?.view.frame = finalFrame
+                toViewController.view.backgroundColor = backgroundColor
             }) { _ in
                 transitionContext.completeTransition(true)
         }

@@ -37,6 +37,10 @@ public class AFMActionSheetController: UIViewController {
         didSet { self.updateUI() }
     }
 
+    @IBInspectable public var backgroundColor: UIColor = UIColor.blackColor().colorWithAlphaComponent(0.5) {
+        didSet { self.updateUI() }
+    }
+
     @IBInspectable public var spacingColor: UIColor = UIColor.clearColor() {
         didSet { self.updateUI() }
     }
@@ -88,11 +92,23 @@ public class AFMActionSheetController: UIViewController {
 
     private func setupViews() {
         self.setupGroupViews()
+        self.setupGestureRecognizers()
+
+        self.view.backgroundColor = self.backgroundColor
+    }
+
+    private func setupGestureRecognizers() {
+        if let gestureRecognizers = self.view.gestureRecognizers {
+            for gestureRecognizer in gestureRecognizers {
+                self.view.removeGestureRecognizer(gestureRecognizer)
+            }
+        }
 
         let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeGestures:")
         swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeGestures:")
         tapGestureRecognizer.cancelsTouchesInView = false
+
         self.view.addGestureRecognizer(swipeGestureRecognizer)
         self.view.addGestureRecognizer(tapGestureRecognizer)
     }
@@ -321,6 +337,7 @@ public class AFMActionSheetController: UIViewController {
     }
 
     private func updateUI() {
+        self.view.backgroundColor = self.backgroundColor
         self.view.removeConstraints(self.view.constraints)
         self.setupGroupViews()
         self.updateContraints()
