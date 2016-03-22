@@ -40,7 +40,7 @@ public class AFMPresentationAnimator: NSObject, UIViewControllerAnimatedTransiti
                 animations: {
                     view.transform = CGAffineTransformIdentity;
                 }, completion: nil)
-            index++
+            index += 1
         }
 
         let backgroundColor = toViewController.view.backgroundColor!

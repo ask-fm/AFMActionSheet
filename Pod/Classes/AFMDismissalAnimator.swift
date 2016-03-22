@@ -36,7 +36,7 @@ public class AFMDismissalAnimator: NSObject, UIViewControllerAnimatedTransitioni
                 animations: {
                     view.transform = CGAffineTransformMakeTranslation(0, initialFrame.height)
                 }, completion: nil)
-            index++
+            index += 1
         }
 
         let backgroundColor = fromViewController.view.backgroundColor!

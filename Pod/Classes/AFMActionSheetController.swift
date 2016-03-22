@@ -104,9 +104,9 @@ public class AFMActionSheetController: UIViewController {
             }
         }
 
-        let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeGestures:")
+        let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(AFMActionSheetController.recognizeGestures(_:)))
         swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "recognizeGestures:")
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AFMActionSheetController.recognizeGestures(_:)))
         tapGestureRecognizer.cancelsTouchesInView = false
 
         self.view.addGestureRecognizer(swipeGestureRecognizer)
@@ -142,7 +142,7 @@ public class AFMActionSheetController: UIViewController {
 
     func addAction(action: AFMAction, control: UIControl, isCancelAction: Bool) {
         control.enabled = action.enabled
-        control.addTarget(self, action:"handleTaps:", forControlEvents: .TouchUpInside)
+        control.addTarget(self, action:#selector(AFMActionSheetController.handleTaps(_:)), forControlEvents: .TouchUpInside)
         control.tag = self.actions.count
 
         self.actions.append(action)
