@@ -18,7 +18,7 @@ public class AFMActionSheetController: UIViewController {
 
     @IBInspectable public var outsideGestureShouldDismiss: Bool = true
 
-    @IBInspectable public var controlHeight: Int        = 50 {
+    @IBInspectable public var minControlHeight: Int     = 50 {
         didSet { self.updateUI() }
     }
     @IBInspectable public var minTitleHeight: Int       = 50 {
@@ -63,15 +63,15 @@ public class AFMActionSheetController: UIViewController {
 
     // MARK: Initializers
 
-    public init(style: ControllerStyle) {
+    public init(style: ControllerStyle, transitioningDelegate: UIViewControllerTransitioningDelegate) {
         self.controllerStyle = style
         super.init(nibName: nil, bundle: nil)
         self.setupViews()
+        self.setupTranstioningDelegate(transitioningDelegate)
     }
 
-    public convenience init(style: ControllerStyle, transitioningDelegate: UIViewControllerTransitioningDelegate) {
-        self.init(style: style)
-        self.setupTranstioningDelegate(transitioningDelegate)
+    public convenience init(style: ControllerStyle) {
+        self.init(style: style, transitioningDelegate: AFMActionSheetTransitioningDelegate())
     }
 
     public convenience init(transitioningDelegate: UIViewControllerTransitioningDelegate) {
@@ -82,12 +82,15 @@ public class AFMActionSheetController: UIViewController {
         self.controllerStyle = .ActionSheet
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.setupViews()
+        self.setupTranstioningDelegate(AFMActionSheetTransitioningDelegate())
     }
 
     required public init?(coder aDecoder: NSCoder) {
         self.controllerStyle = .ActionSheet
         super.init(coder: aDecoder)
         self.setupViews()
+        self.setupTranstioningDelegate(AFMActionSheetTransitioningDelegate())
+
     }
 
     private func setupViews() {
@@ -313,15 +316,15 @@ public class AFMActionSheetController: UIViewController {
 
     private func verticalConstraintsForView(view: UIView, isLast: Bool, sibling: UIView?) -> [NSLayoutConstraint] {
         var constraints: [NSLayoutConstraint] = []
-        let height = view != self.titleView ? self.controlHeight : self.minTitleHeight
+        let height = view != self.titleView ? self.minControlHeight : self.minTitleHeight
         if let sibling = sibling {
-            let format = view != self.titleView ? "V:[view(height)]-spacing-[sibling]" : "V:[view(>=height)]-spacing-[sibling]"
+            let format = "V:[view(>=height)]-spacing-[sibling]"
             constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat(format,
                 options: .DirectionLeadingToTrailing,
                 metrics: ["spacing": self.spacing, "height": height],
                 views: ["view": view, "sibling": sibling]) )
         } else {
-            let format = view != self.titleView ? "V:[view(height)]-0-|" : "V:[view(>=height)]-0-|"
+            let format = "V:[view(>=height)]-0-|"
             constraints.appendContentsOf(NSLayoutConstraint.constraintsWithVisualFormat(format,
                 options: .DirectionLeadingToTrailing,
                 metrics: ["height": height],
