@@ -125,44 +125,41 @@ public class AFMActionSheetController: UIViewController {
 
     // MARK: Adding actions
 
-    public func addAction(action: AFMAction) {
-        let control = UIButton.controlWithAction(action)
-        self.addAction(action, control: control)
-    }
-
-    public func addCancelAction(action: AFMAction) {
-        let control = UIButton.controlWithAction(action)
-        self.addCancelAction(action, control: control)
-    }
-
-    public func addAction(action: AFMAction, control: UIControl) {
-        self.addAction(action, control: control, isCancelAction: false)
-    }
-
-    public func addCancelAction(action: AFMAction, control: UIControl) {
-        self.addAction(action, control: control, isCancelAction: true)
-    }
-
-    func addAction(action: AFMAction, control: UIControl, isCancelAction: Bool) {
+    private func setupControlWithAction(control control: UIControl, action: AFMAction) {
         control.enabled = action.enabled
         control.addTarget(self, action:#selector(AFMActionSheetController.handleTaps(_:)), forControlEvents: .TouchUpInside)
         control.tag = self.actions.count
+    }
 
+    public func addAction(action: AFMAction, control: UIControl, isCancelAction: Bool) {
+        setupControlWithAction(control: control, action: action)
         self.actions.append(action)
 
         if isCancelAction {
             self.cancelControls.append(control)
         } else {
-            // when it comes to non cancel controls, we want to position them from top to bottom
-            self.actionControls.insert(control, atIndex: 0)
+            self.actionControls.append(control)
         }
 
         self.addControlToGroupView(control: control, isCancelAction: isCancelAction)
     }
 
-    public func addTitle(title: String) {
-        let label = UILabel.titleWithText(title)
-        self.addTitleView(label)
+    public func insertAction(action: AFMAction, control: UIControl, isCancelAction: Bool, position: Int) {
+        if isCancelAction {
+            guard position <= self.cancelControls.count else { return }
+        } else {
+            guard position <= self.actionControls.count else { return }
+        }
+        setupControlWithAction(control: control, action: action)
+        self.actions.append(action)
+
+        if isCancelAction {
+            self.cancelControls.insert(control, atIndex: position)
+        } else {
+            self.actionControls.insert(control, atIndex: position)
+        }
+
+        self.addControlToGroupView(control: control, isCancelAction: isCancelAction)
     }
 
     public func addTitleView(titleView: UIView) {
@@ -201,7 +198,7 @@ public class AFMActionSheetController: UIViewController {
     private func actionControlsWithTitle() -> [UIView] {
         var views: [UIView] = self.actionControls
         if let titleView = self.titleView {
-            views.append(titleView)
+            views.insert(titleView, atIndex: 0)
         }
         return views
     }
@@ -230,7 +227,7 @@ public class AFMActionSheetController: UIViewController {
     func updateContraintsForAlert() {
         var views: [UIView] = self.actionControlsWithTitle()
         let cancelViews: [UIView] = self.cancelControls
-        views.insertContentsOf(cancelViews, at: 0)
+        views.appendContentsOf(cancelViews)
         self.actionGroupView.removeConstraints(self.actionControlConstraints)
         self.actionControlConstraints = self.constraintsForViews(views)
         self.actionGroupView.addConstraints(self.actionControlConstraints)
@@ -296,8 +293,9 @@ public class AFMActionSheetController: UIViewController {
         var constraints: [NSLayoutConstraint] = []
 
         var sibling: UIView?
-        for view in views {
-            let isLast = view == views.last
+        // we want to position controls from top to bottom
+        for view in views.reverse() {
+            let isLast = view == views.first
             constraints.appendContentsOf(self.horizontalConstraintsForView(view))
             constraints.appendContentsOf(self.verticalConstraintsForView(view, isLast: isLast, sibling: sibling))
 
@@ -383,6 +381,53 @@ public class AFMActionSheetController: UIViewController {
         if (view == self.view && self.outsideGestureShouldDismiss) {
             self.dismissViewControllerAnimated(true, completion: nil)
         }
+    }
+}
+
+
+// MARK: - Helpers for adding views
+
+extension AFMActionSheetController {
+
+    public func addAction(action: AFMAction) {
+        let control = UIButton.controlWithAction(action)
+        self.addAction(action, control: control)
+    }
+
+    public func addCancelAction(action: AFMAction) {
+        let control = UIButton.controlWithAction(action)
+        self.addCancelAction(action, control: control)
+    }
+
+    public func addAction(action: AFMAction, control: UIControl) {
+        self.addAction(action, control: control, isCancelAction: false)
+    }
+
+    public func addCancelAction(action: AFMAction, control: UIControl) {
+        self.addAction(action, control: control, isCancelAction: true)
+    }
+
+    public func insertAction(action: AFMAction, position: Int) {
+        let control = UIButton.controlWithAction(action)
+        self.insertAction(action, control: control, position: position)
+    }
+
+    public func insertCancelAction(action: AFMAction, position: Int) {
+        let control = UIButton.controlWithAction(action)
+        self.insertCancelAction(action, control: control, position: position)
+    }
+
+    public func insertAction(action: AFMAction, control: UIControl, position: Int) {
+        self.insertAction(action, control: control, isCancelAction: false, position: position)
+    }
+
+    public func insertCancelAction(action: AFMAction, control: UIControl, position: Int) {
+        self.insertAction(action, control: control, isCancelAction: true, position: position)
+    }
+
+    public func addTitle(title: String) {
+        let label = UILabel.titleWithText(title)
+        self.addTitleView(label)
     }
 }
 
