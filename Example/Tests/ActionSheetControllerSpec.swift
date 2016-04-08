@@ -47,6 +47,28 @@ class ActionSheetControllerSpec: QuickSpec {
                 expect(controller.actionGroupView.subviews.count).to(equal(2))
             }
 
+            it("should have correct number of actions and subviews when inserting an action") {
+                controller.addAction(action)
+                controller.addAction(action)
+                let insertedControl = UIButton.controlWithAction(action)
+                controller.insertAction(action, control: insertedControl, position: 0)
+                expect(controller.actions.count).to(equal(3))
+                expect(controller.actionControls.count).to(equal(3))
+                expect(controller.actionControls.first).to(equal(insertedControl))
+                expect(controller.actionGroupView.subviews.count).to(equal(3))
+            }
+
+            it("should have correct number of actions and subviews when inserting an action at wrong position") {
+                controller.addAction(action)
+                controller.addAction(action)
+                let insertedControl = UIButton.controlWithAction(action)
+                controller.insertAction(action, control: insertedControl, position: 42)
+                expect(controller.actions.count).to(equal(2))
+                expect(controller.actionControls.count).to(equal(2))
+                expect(controller.actionControls.first).toNot(equal(insertedControl))
+                expect(controller.actionGroupView.subviews.count).to(equal(2))
+            }
+
             it("should have correct number of subviews when adding title view") {
                 let titleView = UIView()
                 controller.addTitleView(titleView)
@@ -83,7 +105,7 @@ class ActionSheetControllerSpec: QuickSpec {
                 }
                 controller.addAction(action1)
                 controller.addAction(action2)
-                controller.handleTaps(controller.actionControls.last!)
+                controller.handleTaps(controller.actionControls.first!)
                 expect(calledAction1).to(beTrue())
                 expect(calledAction2).to(beFalse())
             }

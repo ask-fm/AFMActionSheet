@@ -45,6 +45,7 @@ public class AFMDismissalAnimator: NSObject, UIViewControllerAnimatedTransitioni
             animations: { _ in
                 fromViewController.view.backgroundColor = backgroundColor.colorWithAlphaComponent(0)
             }) { _ in
+                fromViewController.view.backgroundColor = backgroundColor
                 transitionContext.completeTransition(true)
         }
     }
