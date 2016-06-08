@@ -287,6 +287,11 @@ public class AFMActionSheetController: UIViewController {
             attribute: .CenterY,
             multiplier: 1,
             constant: 0))
+
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=margin)-[actionGroupView]-(>=margin)-|",
+            options: .DirectionLeadingToTrailing,
+            metrics: ["margin": self.verticalMargin],
+            views: ["actionGroupView": self.actionGroupView]))
     }
 
     private func constraintsForViews(views: [UIView]) -> [NSLayoutConstraint] {
