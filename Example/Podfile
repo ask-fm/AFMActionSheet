@@ -1,11 +1,11 @@
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
-target 'AFMActionSheet_Example', :exclusive => true do
+target 'AFMActionSheet_Example' do
   pod "AFMActionSheet", :path => "../"
 end
 
-target 'AFMActionSheet_Tests', :exclusive => true do
+target 'AFMActionSheet_Tests' do
   pod "AFMActionSheet", :path => "../"
 
   pod 'Quick'
