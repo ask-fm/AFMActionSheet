@@ -45,6 +45,8 @@ public class AFMActionSheetController: UIViewController {
         didSet { self.updateUI() }
     }
 
+    public var dismissCompletionBlock: (() -> ())?
+
     let controllerStyle: ControllerStyle
 
     public private(set) var actions: [AFMAction] = []
@@ -357,8 +359,9 @@ public class AFMActionSheetController: UIViewController {
         let action = self.actions[index]
         if action.enabled {
             self.disableControls()
-            self.dismissViewControllerAnimated(true, completion: { _ in
+            self.dismissViewControllerAnimated(true, completion: { [unowned self] _ in
                 self.enableControls()
+                self.dismissCompletionBlock?()
                 action.handler?(action)
             })
         }
@@ -384,7 +387,11 @@ public class AFMActionSheetController: UIViewController {
         let point = gestureRecognizer.locationInView(self.view)
         let view = self.view.hitTest(point, withEvent: nil)
         if (view == self.view && self.outsideGestureShouldDismiss) {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.disableControls()
+            self.dismissViewControllerAnimated(true, completion: { [unowned self] _ in
+                self.enableControls()
+                self.dismissCompletionBlock?()
+            })
         }
     }
 }
