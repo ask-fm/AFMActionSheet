@@ -13,8 +13,8 @@ class ViewController: UIViewController {
 
     @IBOutlet var titleView: UIView!
 
-    @IBAction func buttonTapped(sender: AnyObject) {
-        let actionSheet = AFMActionSheetController(style: .ActionSheet, transitioningDelegate: AFMActionSheetTransitioningDelegate())
+    @IBAction func buttonTapped(_ sender: AnyObject) {
+        let actionSheet = AFMActionSheetController(style: .actionSheet, transitioningDelegate: AFMActionSheetTransitioningDelegate())
 
         let action1 = AFMAction(title: "Action 1", enabled: true) { (action: AFMAction) -> Void in
             print(action.title)
@@ -22,12 +22,12 @@ class ViewController: UIViewController {
         let action2 = AFMAction(title: "Action 2", enabled: false, handler: nil)
         let action3 = AFMAction(title: "Action 3", handler: nil)
 
-        actionSheet.addAction(action1)
-        actionSheet.addAction(action2)
-        actionSheet.addCancelAction(action3)
-        actionSheet.addTitleView(self.titleView)
+        actionSheet.add(action1)
+        actionSheet.add(action2)
+        actionSheet.add(cancelling: action3)
+        actionSheet.add(title: self.titleView)
 
-        self.presentViewController(actionSheet, animated: true, completion: nil)
+        self.present(actionSheet, animated: true, completion: nil)
     }
 }
 
