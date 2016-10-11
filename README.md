@@ -17,8 +17,8 @@ let actionSheet = AFMActionSheetController()
 let action = AFMAction(title: "Action", enabled: true, handler: { (action: AFMAction) -> Void in
     // Do something in handler
 }
-actionSheet.addAction(action)
-self.presentViewController(actionSheet, animated: true, completion: {
+actionSheet.add(action)
+self.present(actionSheet, animated: true, completion: {
     // Do something after completion
 })
 ```
@@ -26,10 +26,10 @@ That's it.
 
 ## Detailed look
 ### Style
-AFMActionSheetController supports two styles: the default action sheet style and alert style. These are set via initializers with `ControllertStyle` enum (`ControllertStyle.ActionSheet` and `ControllertStyle.Alert` accordingly)
+AFMActionSheetController supports two styles: the default action sheet style and alert style. These are set via initializers with `ControllertStyle` enum (`ControllertStyle.actionSheet` and `ControllertStyle.alert` accordingly)
 ```swift
-let actionSheet = AFMActionSheetController(style: .ActionSheet)
-let alert = AFMActionSheetController(style: .Alert)
+let actionSheet = AFMActionSheetController(style: .actionSheet)
+let alert = AFMActionSheetController(style: .alert)
 ```
 
 ### Transitioning animations
@@ -39,22 +39,22 @@ let actionSheet = AFMActionSheetController(transitioningDelegate: myCustomTransi
 ```
 or
 ```swift
-actionSheet.setupTranstioningDelegate(myCustomTransitioningDelegate)
+actionSheet.setup(myCustomTransitioningDelegate)
 ```
 
 ### Action controls
 Action sheet's controls are created by adding `AFMAction` objects to the controller
 ```swift
-actionSheet.addAction(action)
+actionSheet.add(action)
 ```
 It is also possible to add actions as "Cancel actions". When using `ControllertStyle.ActionSheet` style, controls for these actions will be displayed in the bottom "Cancel section".
 ```swift
-actionSheet.addCancelAction(action)
+actionSheet.add(cancelling: action)
 ```
-To use custom views as action controls just pass the view with action to `addAction` or `addCancelAction` method
+To use custom views as action controls just pass the view with action to `add(_:with:)` or `add(cancelling:with:)` method
 ```swift
-actionSheet.addAction(action, control: myCustomControl)
-actionSheet.addCancelAction(action, control: myCustomControl)
+actionSheet.add(action, with: myCustomControl)
+actionSheet.add(cancelling: action, with: myCustomControl)
 ```
 Height of the action control is whatever height passed custom view specifies, but it is possible to specify minimal control height with `minControlHeight` property.
 
@@ -62,11 +62,11 @@ Height of the action control is whatever height passed custom view specifies, bu
 Title view is a view that is located on top of the action sheet and works similar to action controls.
 To set the title view with custom view
 ```swift
-actionSheet.addTitleView(myCustomTitleView)
+actionSheet.add(title: myCustomTitleView)
 ```
 or to set a default `UILabel` with a text
 ```swift
-actionSheet.addTitle("Title")
+actionSheet.add(titleLabelWith: "Title")
 ```
 Like with action control height, it is possible to specify minimal control height with `minTitleHeight` property.
 
