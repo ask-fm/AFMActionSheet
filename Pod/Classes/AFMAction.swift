@@ -9,11 +9,11 @@
 import UIKit
 
 @objc
-public class AFMAction: NSObject {
+open class AFMAction: NSObject {
 
-    public var title: String = ""
-    public var enabled: Bool = true
-    public var handler: ((AFMAction) -> Void)?
+    open var title: String = ""
+    open var enabled: Bool = true
+    open var handler: ((AFMAction) -> Void)?
 
     public init(title: String, enabled: Bool, handler: ((AFMAction) -> Void)?) {
         self.title = title
