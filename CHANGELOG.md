@@ -49,7 +49,8 @@ This release contains several enhancements and improvements
 Initial release
 
 <!---
-[x.x.0]: https://github.com/ask-fm/AFMActionSheet/releases/tag/x.x.x
+[x.x.x]: https://github.com/ask-fm/AFMActionSheet/releases/tag/x.x.x
 -->
+[2.0.0]: https://github.com/ask-fm/AFMActionSheet/releases/tag/2.0.0
 [1.1.0]: https://github.com/ask-fm/AFMActionSheet/releases/tag/1.1.0
 [1.0.0]: https://github.com/ask-fm/AFMActionSheet/releases/tag/1.0.0
