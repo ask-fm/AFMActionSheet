@@ -45,6 +45,11 @@ open class AFMActionSheetController: UIViewController {
         didSet { self.updateUI() }
     }
 
+    private var topMargin: Int {
+        let statusBarHeight = Int(UIApplication.shared.statusBarFrame.height)
+        return statusBarHeight > self.verticalMargin ? statusBarHeight : self.verticalMargin
+    }
+
     open var dismissCompletionBlock: (() -> ())?
 
     let controllerStyle: ControllerStyle
@@ -262,9 +267,9 @@ open class AFMActionSheetController: UIViewController {
         setupGroupView(self.actionGroupView)
         setupGroupView(self.cancelGroupView)
 
-        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=margin)-[actionGroupView]-margin-[cancelGroupView]-margin-|",
+        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=topMargin)-[actionGroupView]-margin-[cancelGroupView]-margin-|",
             options: NSLayoutFormatOptions(),
-            metrics: ["margin": self.verticalMargin],
+            metrics: ["topMargin": self.topMargin, "margin": self.verticalMargin],
             views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView])
         )
     }
@@ -292,7 +297,7 @@ open class AFMActionSheetController: UIViewController {
 
         self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=margin)-[actionGroupView]-(>=margin)-|",
             options: NSLayoutFormatOptions(),
-            metrics: ["margin": self.verticalMargin],
+            metrics: ["margin": self.topMargin],
             views: ["actionGroupView": self.actionGroupView]))
     }
 
