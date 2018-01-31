@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "AFMActionSheet"
-  s.version          = "2.0.0"
+  s.version          = "2.0.1"
   s.summary          = "Easily adaptable action sheet supporting custom views and transitions."
 
   s.description      = <<-DESC

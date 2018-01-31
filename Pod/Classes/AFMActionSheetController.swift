@@ -138,6 +138,7 @@ open class AFMActionSheetController: UIViewController {
         control.tag = self.actions.count
     }
 
+    @objc
     open func add(_ action: AFMAction, with control: UIControl, andActionIsCancelling isCancellingAction: Bool) {
         self.setup(control, with: action)
         self.actions.append(action)
@@ -151,6 +152,7 @@ open class AFMActionSheetController: UIViewController {
         self.addToGroupView(control, andActionIsCancelling: isCancellingAction)
     }
 
+    @objc
     open func insert(_ action: AFMAction, with control: UIControl, at position: Int, andActionIsCancelling isCancellingAction: Bool) {
         if isCancellingAction {
             guard position <= self.cancelControls.count else { return }
@@ -169,6 +171,7 @@ open class AFMActionSheetController: UIViewController {
         self.addToGroupView(control, andActionIsCancelling: isCancellingAction)
     }
 
+    @objc
     open func add(title: UIView) {
         self.titleView = title
 
@@ -359,12 +362,12 @@ open class AFMActionSheetController: UIViewController {
 
     // MARK: Event handling
 
-    func handleTaps(_ sender: UIControl) {
+    @objc func handleTaps(_ sender: UIControl) {
         let index = sender.tag
         let action = self.actions[index]
         if action.enabled {
             self.disableControls()
-            self.dismiss(animated: true, completion: { [unowned self] _ in
+            self.dismiss(animated: true, completion: { [unowned self] in
                 self.enableControls()
                 self.dismissCompletionBlock?()
                 action.handler?(action)
@@ -388,12 +391,12 @@ open class AFMActionSheetController: UIViewController {
         }
     }
 
-    func recognizeGestures(_ gestureRecognizer: UIGestureRecognizer) {
+    @objc func recognizeGestures(_ gestureRecognizer: UIGestureRecognizer) {
         let point = gestureRecognizer.location(in: self.view)
         let view = self.view.hitTest(point, with: nil)
         if (view == self.view && self.outsideGestureShouldDismiss) {
             self.disableControls()
-            self.dismiss(animated: true, completion: { [unowned self] _ in
+            self.dismiss(animated: true, completion: { [unowned self] in
                 self.enableControls()
                 self.dismissCompletionBlock?()
             })
@@ -406,42 +409,51 @@ open class AFMActionSheetController: UIViewController {
 
 extension AFMActionSheetController {
 
+    @objc
     open func add(_ action: AFMAction) {
         let control = UIButton.control(with: action)
         self.add(action, with: control)
     }
 
+    @objc
     open func add(cancelling action: AFMAction) {
         let control = UIButton.control(with: action)
         self.add(cancelling: action, with: control)
     }
 
+    @objc
     open func add(_ action: AFMAction, with control: UIControl) {
         self.add(action, with: control, andActionIsCancelling: false)
     }
 
+    @objc
     open func add(cancelling action: AFMAction, with control: UIControl) {
         self.add(action, with: control, andActionIsCancelling: true)
     }
 
+    @objc
     open func insert(_ action: AFMAction, at position: Int) {
         let control = UIButton.control(with: action)
         self.insert(action, with: control, at: position)
     }
 
+    @objc
     open func insert(cancelling action: AFMAction, at position: Int) {
         let control = UIButton.control(with: action)
         self.insert(cancelling: action, with: control, at: position)
     }
 
+    @objc
     open func insert(_ action: AFMAction, with control: UIControl, at position: Int) {
         self.insert(action, with: control, at: position, andActionIsCancelling: false)
     }
 
+    @objc
     open func insert(cancelling action: AFMAction, with control: UIControl, at position: Int) {
         self.insert(action, with: control, at: position, andActionIsCancelling: true)
     }
 
+    @objc
     open func add(titleLabelWith text: String) {
         let label = UILabel.title(with: text)
         self.add(title: label)

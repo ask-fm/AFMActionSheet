@@ -15,12 +15,14 @@ open class AFMAction: NSObject {
     open var enabled: Bool = true
     open var handler: ((AFMAction) -> Void)?
 
+    @objc
     public init(title: String, enabled: Bool, handler: ((AFMAction) -> Void)?) {
         self.title = title
         self.enabled = enabled
         self.handler = handler
     }
 
+    @objc
     public convenience init(title: String, handler: ((AFMAction) -> Void)?) {
         self.init(title: title, enabled: true, handler: handler)
     }
